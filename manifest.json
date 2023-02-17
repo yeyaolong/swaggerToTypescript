@@ -1,12 +1,15 @@
 {
-    "manifest_version": "3",
+    "manifest_version": 3,
     "name": "swagger-to-typescript",
     "version": "0.0.1",
     "description": "根据swagger中的接口生成typescript的基本内容",
     "icons": {
-
+        "16": "./img/icon_16.png",
+        "48": "./img/icon_48.png",
+        "128": "./img/icon_128.png"
     },
-    "background": {
-        
+    "action": {
+        "default_popup": "./html/hello.html",
+        "default_icon": "./img/icon_128.png"
     }
 }
