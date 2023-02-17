@@ -1,0 +1,2 @@
+# 描述
+用于将swagger转换成typescript文件的chrome扩展程序

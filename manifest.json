@@ -1,0 +1,12 @@
+{
+    "manifest_version": "3",
+    "name": "swagger-to-typescript",
+    "version": "0.0.1",
+    "description": "根据swagger中的接口生成typescript的基本内容",
+    "icons": {
+
+    },
+    "background": {
+        
+    }
+}
