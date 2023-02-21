@@ -9,7 +9,7 @@
         "128": "./img/icon_128.png"
     },
     "action": {
-        "default_popup": "./html/hello.html",
+        "default_popup": "./index.html",
         "default_icon": "./img/icon_128.png"
     }
 }
