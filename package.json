@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/yeyaolong/swaggerToTypescript#readme",
   "devDependencies": {
+    "@types/chrome": "^0.0.217",
     "copy-webpack-plugin": "^11.0.0",
     "html-webpack-plugin": "^5.5.0",
     "ts-loader": "^9.4.2",
