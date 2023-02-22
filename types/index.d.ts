@@ -8,3 +8,11 @@ declare interface ApiInterface<T = any> {
     path?: string
     timestamp: string
 }
+
+declare interface HomeData {
+    title: string;
+    info: Array<{
+        label: string | undefined | null,
+        value: string | undefined | null
+    }>
+}

@@ -32,11 +32,6 @@ class AxiosRequest {
               if (token && isToken) {
                 headers.Authorization = 'Bearer ' + token
               }
-          
-              // headers.tenant = db.get('TENANT', '')
-            //   const clientId = import.meta.env.VITE_APP_CLIENT_ID
-            //   const clientSecret = import.meta.env.VUE_APP_CLIENT_SECRET
-            //   headers['Sh-Client'] = `Basic ${Base64.encode(`${clientId}:${clientSecret}`)}`
               return config
             },
             (error: Error) => Promise.reject(error)
@@ -46,11 +41,16 @@ class AxiosRequest {
     initResponseInterceptors() {}
 
     get(data: any, url: string) {
-        this.axios({
-            method: 'GET',
-            url,
-            data: data
-        });
+        return new Promise((resolve, reject) => {
+            this.axios({
+                method: 'GET',
+                url,
+                data: data
+            }).then((res: any) => {
+                resolve(res);
+            });
+        })
+        
     }
 
     post() {}

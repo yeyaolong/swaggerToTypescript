@@ -1,0 +1,96 @@
+{
+    "data": [
+        {
+            "name": "gateway网关系统",
+            "url": "/v2/api-docs?group=gateway网关系统",
+            "swaggerVersion": "2.0",
+            "location": "/v2/api-docs?group=gateway网关系统"
+        },
+        {
+            "name": "shuhan-survey-service-自动表单",
+            "url": "/shuhan-survey-service/v2/api-docs?group=自动表单",
+            "swaggerVersion": "2.0",
+            "location": "/shuhan-survey-service/v2/api-docs?group=自动表单"
+        },
+        {
+            "name": "shuhan-enterprise-service-企业服务前台接口",
+            "url": "/shuhan-enterprise-service/v2/api-docs?group=企业服务前台接口",
+            "swaggerVersion": "2.0",
+            "location": "/shuhan-enterprise-service/v2/api-docs?group=企业服务前台接口"
+        },
+        {
+            "name": "shuhan-enterprise-service-企业管理后台接口",
+            "url": "/shuhan-enterprise-service/v2/api-docs?group=企业管理后台接口",
+            "swaggerVersion": "2.0",
+            "location": "/shuhan-enterprise-service/v2/api-docs?group=企业管理后台接口"
+        },
+        {
+            "name": "fAuth-前台用户相关",
+            "url": "/fAuth/v2/api-docs?group=前台用户相关",
+            "swaggerVersion": "2.0",
+            "location": "/fAuth/v2/api-docs?group=前台用户相关"
+        },
+        {
+            "name": "file-center-service-文件中心服务",
+            "url": "/file-center-service/v2/api-docs?group=文件中心服务",
+            "swaggerVersion": "2.0",
+            "location": "/file-center-service/v2/api-docs?group=文件中心服务"
+        },
+        {
+            "name": "auth-公共模块",
+            "url": "/auth/v2/api-docs?group=公共模块",
+            "swaggerVersion": "2.0",
+            "location": "/auth/v2/api-docs?group=公共模块"
+        },
+        {
+            "name": "auth-权限模块",
+            "url": "/auth/v2/api-docs?group=权限模块",
+            "swaggerVersion": "2.0",
+            "location": "/auth/v2/api-docs?group=权限模块"
+        },
+        {
+            "name": "auth-组织模块",
+            "url": "/auth/v2/api-docs?group=组织模块",
+            "swaggerVersion": "2.0",
+            "location": "/auth/v2/api-docs?group=组织模块"
+        }
+    ],
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+        "connection": "close",
+        "content-type": "application/json",
+        "date": "Wed, 22 Feb 2023 05:52:32 GMT",
+        "tlogtraceid": "12194227987258624"
+    },
+    "config": {
+        "transitional": {
+            "silentJSONParsing": true,
+            "forcedJSONParsing": true,
+            "clarifyTimeoutError": false
+        },
+        "adapter": [
+            "xhr",
+            "http"
+        ],
+        "transformRequest": [
+            null
+        ],
+        "transformResponse": [
+            null
+        ],
+        "timeout": 3000,
+        "xsrfCookieName": "XSRF-TOKEN",
+        "xsrfHeaderName": "X-XSRF-TOKEN",
+        "maxContentLength": -1,
+        "maxBodyLength": -1,
+        "env": {},
+        "headers": {
+            "Accept": "application/json, text/plain, */*"
+        },
+        "baseURL": "http://10.50.23.68:40820/gateway",
+        "method": "get",
+        "url": "http://10.50.23.68:40820/gateway/swagger-resources"
+    },
+    "request": {}
+}

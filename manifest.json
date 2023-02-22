@@ -8,11 +8,20 @@
         "48": "./img/icon_48.png",
         "128": "./img/icon_128.png"
     },
-    "action": {
-        "default_popup": "./index.html",
-        "default_icon": "./img/icon_128.png"
-    },
     "permissions": [
         "storage"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*/gateway/doc.html",
+                "https://*/gateway/doc.html#/*",
+                "https://developer.chrome.com/docs/extensions/*",
+                "https://developer.chrome.com/docs/webstore/*",
+                "http://10.50.23.68:40820/*"
+
+            ],
+            "js": ["./bundle.js"]
+        }
     ]
 }

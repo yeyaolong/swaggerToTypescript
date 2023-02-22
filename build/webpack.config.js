@@ -21,6 +21,12 @@ module.exports = {
           'less-loader',
         ],
       },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        use: {
+          loader: 'url-loader'
+        }
+      }
     ],
   },
   resolve: {
@@ -32,11 +38,12 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, '../dist'),
+    publicPath: './'
   },
   plugins: [
     new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: 'index.html',
+        // filename: 'index.html',
+        // template: 'index.html',
     }),
     new CopyPlugin({
         patterns: [
