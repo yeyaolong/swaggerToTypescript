@@ -21,6 +21,8 @@ class AxiosRequest {
             this.config = config;
         }
         this.axios = Axios.create(this.config);
+        this.initRequestInterceptors();
+        this.initResponseInterceptors();
     }
     // 初始化请求拦截器
     initRequestInterceptors() {
@@ -38,7 +40,12 @@ class AxiosRequest {
           )
     }
     // 初始化响应拦截器
-    initResponseInterceptors() {}
+    initResponseInterceptors() {
+        this.axios.interceptors.response.use(
+            (response: any) => response,
+            (error: Error) => Promise.reject(error)
+          )
+    }
 
     get(url: string, data?: any) {
         return new Promise((resolve, reject) => {
@@ -47,7 +54,7 @@ class AxiosRequest {
                 url,
                 data: data
             }).then((res: any) => {
-                resolve(res);
+                this.handleSuccess(res, resolve);
             });
         })
         
@@ -59,9 +66,17 @@ class AxiosRequest {
 
     delete() {}
 
-    handleError(error: Error, reject: Function, opts: any) {}
+    handleError(error: Error, reject: Function) {}
 
-    handleSuccess(res: AxiosResponse<ApiInterface>, resolve: Function, opts: any) {}
+    handleSuccess(res: AxiosResponse<ApiInterface>, resolve: Function) {
+        if (res.data.code && res.data.code !== 200) {
+            const loginErr = [401, 10004, 40001, 40002, 50001, 10002]
+            if (loginErr.includes(res.data.code)) {
+                alert('用户登录超时');
+            }
+        }
+        resolve(res)
+    }
 
 }
 

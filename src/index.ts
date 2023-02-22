@@ -2,6 +2,7 @@
 // import db from '@/core/storage';
 import AxiosRequest from '@/core/AxiosRequest';
 import Render from '@/render/index';
+import jsonManager from '@/core/JSONManager';
 import dispatchCenter from './core/DispatchCenter';
 
 
@@ -20,6 +21,9 @@ async function getSwaggerResource() {
 function init() {
     // 事件注册
     dispatchCenter.regist('getApiDocs', getApiDocs);
+    dispatchCenter.regist('definitions2TS', jsonManager.definitions2TS);
+
+
     // 页面上注入扩展程序的icon 
     let render = new Render('app');
     render.initIcon();
@@ -27,10 +31,11 @@ function init() {
     // getSwaggerResource();
 }
 
-function getApiDocs(group: string) {
+async function getApiDocs(group: string) {
     const api = new AxiosRequest(undefined, '');
     let url = window.location.origin + '/gateway' + group
-    let res = api.get(url);
+    let res = await api.get(url);
+    // dispatchCenter.dispatchEvent('definitions2TS')
 }
 
 
