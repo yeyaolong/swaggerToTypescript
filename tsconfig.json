@@ -1,12 +1,21 @@
 {
     "compilerOptions": {
-      "outDir": "./dist/",
-      "noImplicitAny": true,
-      "module": "es6",
-      "target": "es5",
-      "jsx": "react",
-      "allowJs": true,
+      "target": "esnext",
+      "useDefineForClassFields": true,
+      "module": "esnext",
       "moduleResolution": "node",
+      "strict": true,
+      "jsx": "preserve",
+      "sourceMap": true,
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+      "lib": ["esnext", "dom"],
+      "typeRoots": ["./node_modules/@types/", "./types"],
+      "baseUrl": "./",
+      "paths":{
+        "@/*": ["src/*"],
+        "#/*": ["types/*"]
+      },
       "types": [
         "chrome"
       ]
