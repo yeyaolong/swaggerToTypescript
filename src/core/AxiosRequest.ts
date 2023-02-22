@@ -40,7 +40,7 @@ class AxiosRequest {
     // 初始化响应拦截器
     initResponseInterceptors() {}
 
-    get(data: any, url: string) {
+    get(url: string, data?: any) {
         return new Promise((resolve, reject) => {
             this.axios({
                 method: 'GET',

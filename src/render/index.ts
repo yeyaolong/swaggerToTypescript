@@ -1,5 +1,6 @@
 import './index.less';
 import HtmlDataManage from '@/core/HtmlDataManage';
+import dispatchCenter from '@/core/DispatchCenter';
 class Render {
     container: HTMLBodyElement | HTMLDivElement | HTMLElement | null;
     htmlDataManage = new HtmlDataManage();
@@ -18,7 +19,9 @@ class Render {
 
         iconContainer.addEventListener('click', () => {
             this.htmlDataManage.getHomeHtml();
-            this.htmlDataManage.getGroupUrl();
+            let groupUrl = this.htmlDataManage.getGroupUrl();
+            // 触发获取接口信息事件
+            dispatchCenter.dispatchEvent('getApiDocs', groupUrl)
         });
 
         if (this.container) {

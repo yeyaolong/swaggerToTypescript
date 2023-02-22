@@ -34,14 +34,12 @@ class HtmlDataMange {
             
         }
 
-        console.log('getHomeHtml', this.homeData);
-
     }
 
     /**
      * 获取分组URL
      */
-    getGroupUrl() {
+    getGroupUrl(): string {
         let result = '';
         if (this.homeData) {
             this.homeData.info.forEach((item) => {
