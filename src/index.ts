@@ -1,9 +1,9 @@
 // import '@/css/index.less';
 // import db from '@/core/storage';
 import AxiosRequest from '@/core/AxiosRequest';
-import Render from '@/render/index';
+import Render from '@/core/render/index';
 import jsonManager from '@/core/JSONManager';
-import dispatchCenter from './core/DispatchCenter';
+import dispatchCenter from '@/core/DispatchCenter';
 
 
 /**
@@ -20,15 +20,20 @@ async function getSwaggerResource() {
  */
 function init() {
     // 事件注册
-    dispatchCenter.regist('getApiDocs', getApiDocs);
-    dispatchCenter.regist('definitions2TS', jsonManager.definitions2TS);
-
+    regist();
 
     // 页面上注入扩展程序的icon 
     let render = new Render('app');
     render.initIcon();
-    // // 获取接口信息
+    // 获取接口信息
     // getSwaggerResource();
+}
+/**
+ * @description 事件注册
+ */
+function regist() {
+    dispatchCenter.regist('getApiDocs', getApiDocs);
+    dispatchCenter.regist('definitions2TS', jsonManager.definitions2TS);
 }
 
 async function getApiDocs(group: string) {
@@ -41,6 +46,3 @@ async function getApiDocs(group: string) {
 
 init();
 
-
-
-// http://10.50.23.68:40820/gateway/shuhan-enterprise-service/v2/api-docs?group=企业接口后台

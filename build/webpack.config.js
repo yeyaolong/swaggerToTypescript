@@ -22,10 +22,20 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpg|jpeg|gif|svg)$/,
+        // use: {
+        //   loader: 'url-loader',
+          
+        // },
         use: {
-          loader: 'url-loader'
-        }
+          loader: 'url-loader',
+          options: {
+            limit: 10*1024, // 将10kb以下的图片转成base64
+            outputPath: 'assets'
+
+          }  
+        },
+        
       }
     ],
   },
