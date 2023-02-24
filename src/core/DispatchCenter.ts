@@ -29,11 +29,21 @@ class DispatchCenter {
      * @params params 事件处理方法参数
      */
     dispatchEvent(event: string, params: any) {
+        let hasFunc = false; // 是否找到了对应的函数
         this.registerList.forEach((item) => {
             if (item.event === event && typeof item.handler === 'function') {
-                item.handler(params);
+                hasFunc = true;
+                if (typeof params === 'object') {
+                    item.handler(...params);
+                } else {
+                    item.handler(params);
+                }
+                
             }
         });
+        if (!hasFunc) {
+            throw new Error('没有找到对应的处理方法')
+        }
     }
 
     /**

@@ -4,8 +4,7 @@ import AxiosRequest from '@/core/AxiosRequest';
 import Render from '@/core/render/index';
 import jsonManager from '@/core/JSONManager';
 import dispatchCenter from '@/core/DispatchCenter';
-
-
+import fileManager from './core/FileManager';
 /**
  * @description 获取swaggerResources
  */
@@ -34,12 +33,16 @@ function init() {
 function regist() {
     dispatchCenter.regist('getApiDocs', getApiDocs);
     dispatchCenter.regist('definitions2TS', jsonManager.definitions2TS);
+    dispatchCenter.regist('exportFile', fileManager.createFiles)
 }
 
 async function getApiDocs(group: string) {
     const api = new AxiosRequest(undefined, '');
     let url = window.location.origin + '/gateway' + group
     let res = await api.get(url);
+    let data = JSON.stringify(res);
+    // console.log('data', data);
+    dispatchCenter.dispatchEvent('exportFile', ['测试.ts', data]);
     // dispatchCenter.dispatchEvent('definitions2TS')
 }
 
