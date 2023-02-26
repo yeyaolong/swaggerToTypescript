@@ -9,7 +9,8 @@
         "128": "./img/icon_128.png"
     },
     "permissions": [
-        "storage"
+        "storage",
+        "contextMenus"
     ],
     "content_scripts": [
         {
