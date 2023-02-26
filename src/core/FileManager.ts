@@ -1,8 +1,11 @@
 class FileManager {
     constructor() {}
 
-    createFiles(name: string, data: any) {
-        console.log('createFiles', data, name)
+    createFiles(params: {name: string, data: any}) {
+        const {
+            name,
+            data
+        } = params;
         let urlObject = window.URL || window.webkitURL || window;
         var export_blob = new Blob([data]);
         var save_link = document.createElement("a");

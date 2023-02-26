@@ -47,7 +47,7 @@ class AxiosRequest {
           )
     }
 
-    get(url: string, data?: any) {
+    get(url: string, data?: any): Promise<ApiInterface>  {
         return new Promise((resolve, reject) => {
             this.axios({
                 method: 'GET',

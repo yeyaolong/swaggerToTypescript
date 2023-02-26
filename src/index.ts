@@ -5,6 +5,7 @@ import Render from '@/core/render/index';
 import jsonManager from '@/core/JSONManager';
 import dispatchCenter from '@/core/DispatchCenter';
 import fileManager from './core/FileManager';
+import { ApiDocsResponse } from 'types/api';
 /**
  * @description 获取swaggerResources
  */
@@ -31,19 +32,18 @@ function init() {
  * @description 事件注册
  */
 function regist() {
-    dispatchCenter.regist('getApiDocs', getApiDocs);
-    dispatchCenter.regist('definitions2TS', jsonManager.definitions2TS);
-    dispatchCenter.regist('exportFile', fileManager.createFiles)
+    dispatchCenter.regist('getApiDocs', undefined, getApiDocs);
+    dispatchCenter.regist('definitions2TSString', jsonManager, jsonManager.definitions2TSString);
+    dispatchCenter.regist('exportFile', fileManager, fileManager.createFiles)
 }
 
 async function getApiDocs(group: string) {
     const api = new AxiosRequest(undefined, '');
     let url = window.location.origin + '/gateway' + group
-    let res = await api.get(url);
-    let data = JSON.stringify(res);
-    // console.log('data', data);
-    dispatchCenter.dispatchEvent('exportFile', ['测试.ts', data]);
-    // dispatchCenter.dispatchEvent('definitions2TS')
+    let res: ApiDocsResponse = await api.get(url);
+    let data = dispatchCenter.dispatchEvent('definitions2TSString', res.data.definitions);
+    // console.log('getApiDocs', data);
+    dispatchCenter.dispatchEvent('exportFile', {name: '测试.ts', data: data[0]});
 }
 
 
