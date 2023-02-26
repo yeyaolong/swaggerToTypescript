@@ -14,12 +14,7 @@
     "content_scripts": [
         {
             "matches": [
-                "https://*/gateway/doc.html",
-                "https://*/gateway/doc.html#/*",
-                "https://developer.chrome.com/docs/extensions/*",
-                "https://developer.chrome.com/docs/webstore/*",
-                "http://10.50.23.68:40820/*"
-
+                "*://*/gateway/*"
             ],
             "js": ["./bundle.js"]
         }

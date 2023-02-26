@@ -27,7 +27,8 @@ class JSONManager {
         let title = definition.title.replaceAll('integer', 'number')
                                     .replaceAll('int', 'number')
                                     .replaceAll('«', '<').replaceAll('»', '>');
-        let result = `export type ${title} = {`;
+        let result = `// ${definition.description ? definition.description : ''}\r\n`
+        result += `export type ${title} = {`;
         for (let key in definition.properties) {
             let tmp = definition.properties[key];
             let type = '';
@@ -54,7 +55,6 @@ class JSONManager {
             
         }
         result += '\r\n}';
-        // console.log('definition2TSString', result);
         return result;
     }
 }
