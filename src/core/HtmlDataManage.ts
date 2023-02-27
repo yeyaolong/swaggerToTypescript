@@ -52,4 +52,6 @@ class HtmlDataMange {
     }
 }
 
-export default HtmlDataMange
+const htmlDataManage = new HtmlDataMange();
+
+export default htmlDataManage

@@ -10,5 +10,10 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 chrome.contextMenus.onClicked.addListener((item, tab) => {
-    console.log('chrome.contextMenus.onClicked', item, tab);
+    if (tab && tab.id) {
+        chrome.tabs.sendMessage(tab.id, { info: '转化当前接口' }, {}, (res) => {
+            console.log('background -> content', res);
+        })
+    }
+    
 });

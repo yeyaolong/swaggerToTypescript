@@ -1,9 +1,9 @@
 import './index.less';
-import HtmlDataManage from '@/core/HtmlDataManage';
+import htmlDataManage from '@/core/HtmlDataManage';
+
 import dispatchCenter from '@/core/DispatchCenter';
 class Render {
     container: HTMLBodyElement | HTMLDivElement | HTMLElement | null;
-    htmlDataManage = new HtmlDataManage();
     constructor(containerId: string) {
         let tempContainer = document.querySelector('#' + containerId) as HTMLElement;
         if (tempContainer) {
@@ -18,10 +18,10 @@ class Render {
         iconContainer.className = 'icon-container';
 
         iconContainer.addEventListener('click', () => {
-            this.htmlDataManage.getHomeHtml();
-            let groupUrl = this.htmlDataManage.getGroupUrl();
+            htmlDataManage.getHomeHtml();
+            let groupUrl = htmlDataManage.getGroupUrl();
             // 触发获取接口信息事件
-            dispatchCenter.dispatchEvent('getApiDocs', groupUrl)
+            dispatchCenter.dispatchEvent('getApiDocs')
         });
 
         if (this.container) {

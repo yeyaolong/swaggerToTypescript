@@ -31,7 +31,7 @@ class DispatchCenter {
      * @params event 事件名称
      * @params params 事件处理方法参数
      */
-    dispatchEvent(event: string, params: any) {
+    dispatchEvent(event: string, params?: any) {
         let hasFunc = false; // 是否找到了对应的函数
         let result: Array<any> = [];
         this.registerList.forEach((item) => {

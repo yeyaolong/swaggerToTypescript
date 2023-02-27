@@ -5,6 +5,7 @@ import Render from '@/core/render/index';
 import jsonManager from '@/core/JSONManager';
 import dispatchCenter from '@/core/DispatchCenter';
 import fileManager from './core/FileManager';
+import htmlDataManage from '@/core/HtmlDataManage';
 import { ApiDocsResponse } from 'types/api';
 /**
  * @description 获取swaggerResources
@@ -37,15 +38,19 @@ function regist() {
     dispatchCenter.regist('exportFile', fileManager, fileManager.createFiles)
 }
 
-async function getApiDocs(group: string) {
+async function getApiDocs() {
+    let group = htmlDataManage.getGroupUrl();
     const api = new AxiosRequest(undefined, '');
     let url = window.location.origin + '/gateway' + group
     let res: ApiDocsResponse = await api.get(url);
     let data = dispatchCenter.dispatchEvent('definitions2TSString', res.data.definitions);
-    // console.log('getApiDocs', data);
     dispatchCenter.dispatchEvent('exportFile', {name: '测试.ts', data: data[0]});
 }
 
 
 init();
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log('request', request, sender);
+    sendResponse('content收到收到');
+})
