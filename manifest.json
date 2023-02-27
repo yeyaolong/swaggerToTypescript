@@ -12,12 +12,16 @@
         "storage",
         "contextMenus"
     ],
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
     "content_scripts": [
         {
             "matches": [
                 "*://*/gateway/*"
             ],
-            "js": ["./bundle.js"]
+            "js": ["./index.js"]
         }
     ]
 }

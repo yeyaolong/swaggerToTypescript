@@ -4,7 +4,11 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: 'production',
-  entry: './src/index.ts',
+  // entry: './src/index.ts',
+  entry: {
+    background: './src/background.ts',
+    index: './src/index.ts'
+  },
   module: {
     rules: [
       {
@@ -46,7 +50,8 @@ module.exports = {
     }
   },
   output: {
-    filename: 'bundle.js',
+    // filename: 'bundle.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, '../dist'),
     publicPath: './'
   },
