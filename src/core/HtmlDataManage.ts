@@ -1,6 +1,3 @@
-import { useMessage } from 'naive-ui';
-
-let message = useMessage();
 /**
  * 通过html元素获取数据
  */
@@ -20,7 +17,7 @@ class HtmlDataMange {
             title: '',
             info: []
         };
-        let mainDom = document.querySelector('.ant-tabs-content')?.querySelector('main');
+        let mainDom = document.querySelector('.ant-tabs-content')?.querySelector('.ant-tabs-tabpane-active')?.querySelector('main')?.querySelector('.description');
         if (mainDom) {
             let title = mainDom.querySelector('h2')?.textContent;
             this.homeData.title = title ? title : '';
@@ -33,8 +30,10 @@ class HtmlDataMange {
                     label,
                     value
                 });
-            })
+            });
             
+        } else {
+            alert('获取主页信息异常')
         }
 
     }
@@ -70,9 +69,7 @@ class HtmlDataMange {
         if (result) {
             return result;
         } else {
-            message.error('获取API url失败');
-            throw new Error('获取API url失败')
-            
+            alert('获取API url失败');
         }
 
     }

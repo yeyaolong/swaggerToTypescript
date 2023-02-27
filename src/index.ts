@@ -20,7 +20,6 @@ async function getSwaggerResource() {
  * @description 初始化
  */
 function init() {
-    // htmlDataManage.getHomeHtml();
     // 事件注册
     regist();
 
@@ -42,11 +41,18 @@ function regist() {
 async function getApiDocs() {
     htmlDataManage.getHomeHtml();
     let group = htmlDataManage.getGroupUrl();
-    const api = new AxiosRequest(undefined, '');
-    let url = window.location.origin + '/gateway' + group
-    let res: ApiDocsResponse = await api.get(url);
-    let data = dispatchCenter.dispatchEvent('definitions2TSString', res.data.definitions);
-    return data;
+    let data;
+    if (group) {
+        const api = new AxiosRequest(undefined, '');
+        let url = window.location.origin + '/gateway' + group
+        let res: ApiDocsResponse = await api.get(url);
+        data = dispatchCenter.dispatchEvent('definitions2TSString', res.data.definitions);
+        return data;
+    } else {
+        throw new Error('获取分组url/groupUrl失败')
+    }
+    
+    
     
 }
 
