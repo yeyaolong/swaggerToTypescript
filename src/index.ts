@@ -64,5 +64,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     // 触发获取接口信息事件
     // let data = await dispatchCenter.dispatchEvent('getApiDocs');
     // dispatchCenter.dispatchEvent('exportFile', {name: '测试.ts', data: data[0]});
+    console.log('chrome.runtime.onMessage', request, sender, sendResponse);
     sendResponse('content收到收到');
 })
