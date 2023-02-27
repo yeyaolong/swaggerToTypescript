@@ -1,3 +1,6 @@
+import { useMessage } from 'naive-ui';
+
+let message = useMessage();
 /**
  * 通过html元素获取数据
  */
@@ -49,6 +52,29 @@ class HtmlDataMange {
             })
         }
         return result;
+    }
+    /**
+     * @description 获取指定APIUrl
+     * 在页面上右键选择解析，获取当前API的url
+     */
+    getSpcifyApiUrl() {
+        // 获取当前活动的tab
+        let activeTabDom = document.querySelector('.ant-tabs-tabpane-active');
+        let result = '';
+        if (activeTabDom) {
+            let summaryPathDom = activeTabDom.querySelector('.knife4j-api-summary-path');
+            if (summaryPathDom) {
+                result = summaryPathDom.textContent ? summaryPathDom.textContent : '';
+            }
+        }
+        if (result) {
+            return result;
+        } else {
+            message.error('获取API url失败');
+            throw new Error('获取API url失败')
+            
+        }
+
     }
 }
 

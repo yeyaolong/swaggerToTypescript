@@ -20,6 +20,7 @@ async function getSwaggerResource() {
  * @description 初始化
  */
 function init() {
+    // htmlDataManage.getHomeHtml();
     // 事件注册
     regist();
 
@@ -39,18 +40,23 @@ function regist() {
 }
 
 async function getApiDocs() {
+    htmlDataManage.getHomeHtml();
     let group = htmlDataManage.getGroupUrl();
     const api = new AxiosRequest(undefined, '');
     let url = window.location.origin + '/gateway' + group
     let res: ApiDocsResponse = await api.get(url);
     let data = dispatchCenter.dispatchEvent('definitions2TSString', res.data.definitions);
-    dispatchCenter.dispatchEvent('exportFile', {name: '测试.ts', data: data[0]});
+    return data;
+    
 }
 
 
 init();
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log('request', request, sender);
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    // htmlDataManage.getHomeHtml();
+    // 触发获取接口信息事件
+    // let data = await dispatchCenter.dispatchEvent('getApiDocs');
+    // dispatchCenter.dispatchEvent('exportFile', {name: '测试.ts', data: data[0]});
     sendResponse('content收到收到');
 })

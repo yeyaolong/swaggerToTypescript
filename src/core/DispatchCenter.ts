@@ -31,23 +31,41 @@ class DispatchCenter {
      * @params event 事件名称
      * @params params 事件处理方法参数
      */
-    dispatchEvent(event: string, params?: any) {
+    async dispatchEvent(event: string, params?: any) {
         let hasFunc = false; // 是否找到了对应的函数
         let result: Array<any> = [];
-        this.registerList.forEach((item) => {
+        console.log('dispatchEvent start', event, params);
+        // forEach不能使用 await 改用普通的for()循环
+        // this.registerList.forEach(async (item) => {
+        //     if (item.event === event && typeof item.handler === 'function') {
+        //         hasFunc = true;
+        //         let tmp;
+        //         if (item.context) {
+        //             tmp = await item.handler.call(item.context, params);
+        //         } else {
+        //             tmp = await item.handler(params);
+        //         }
+        //         result.push(tmp);
+        //     }
+        // });
+        const len = this.registerList.length;
+        for (let i = 0; i < len; i++) {
+            let item = this.registerList[i];
             if (item.event === event && typeof item.handler === 'function') {
                 hasFunc = true;
-                if (item.context) {
-                    result.push(item.handler.call(item.context, params));
-                } else {
-                    result.push(item.handler(params));
-                }
+                let tmp;
+            if (item.context) {
+                    tmp = await item.handler.call(item.context, params);
+            } else {
+                    tmp = await item.handler(params);
             }
-        });
+                result.push(tmp);
+            }
+        }
         if (!hasFunc) {
             throw new Error('没有找到对应的处理方法')
         }
-        console.log('dispatchEvent', event, result);
+        console.log('dispatchEvent end', event, result);
         return result;
     }
 

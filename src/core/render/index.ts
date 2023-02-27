@@ -1,7 +1,7 @@
 import './index.less';
 import htmlDataManage from '@/core/HtmlDataManage';
-
 import dispatchCenter from '@/core/DispatchCenter';
+
 class Render {
     container: HTMLBodyElement | HTMLDivElement | HTMLElement | null;
     constructor(containerId: string) {
@@ -17,11 +17,10 @@ class Render {
         let iconContainer = document.createElement('div');
         iconContainer.className = 'icon-container';
 
-        iconContainer.addEventListener('click', () => {
-            htmlDataManage.getHomeHtml();
-            let groupUrl = htmlDataManage.getGroupUrl();
+        iconContainer.addEventListener('click', async () => {
             // 触发获取接口信息事件
-            dispatchCenter.dispatchEvent('getApiDocs')
+            let data = await dispatchCenter.dispatchEvent('getApiDocs');
+            dispatchCenter.dispatchEvent('exportFile', {name: '测试.ts', data: data[0]});
         });
 
         if (this.container) {
