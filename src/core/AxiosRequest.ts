@@ -47,13 +47,13 @@ class AxiosRequest {
           )
     }
 
-    get(url: string, data?: any): Promise<ApiInterface>  {
+    get(url: string, data?: any): Promise<AxiosResponse>  {
         return new Promise((resolve, reject) => {
             this.axios({
                 method: 'GET',
                 url,
                 data: data
-            }).then((res: any) => {
+            }).then((res: AxiosResponse) => {
                 this.handleSuccess(res, resolve);
             });
         })
@@ -68,7 +68,7 @@ class AxiosRequest {
 
     handleError(error: Error, reject: Function) {}
 
-    handleSuccess(res: AxiosResponse<ApiInterface>, resolve: Function) {
+    handleSuccess(res: AxiosResponse, resolve: Function) {
         if (res.data.code && res.data.code !== 200) {
             const loginErr = [401, 10004, 40001, 40002, 50001, 10002]
             if (loginErr.includes(res.data.code)) {

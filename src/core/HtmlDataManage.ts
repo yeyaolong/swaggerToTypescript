@@ -1,3 +1,4 @@
+// import apiManage from './core/ApiManage';
 /**
  * @description 通过html元素获取数据
  */
@@ -9,6 +10,20 @@ class HtmlDataMange {
             info: []
         };
     }
+    /**
+     * @descriptioin 从页面上获取当前选中的微应用
+     */
+    getCurrentMicroApp(): string {
+        let result = '';
+        const currentSelectedDom = document.querySelector('.ant-select-selection-selected-value')
+        if (currentSelectedDom) {
+            result = currentSelectedDom.textContent ? currentSelectedDom.textContent : '';
+        } else {
+            throw new Error('页面上获取当前选中的微应用异常')
+        }
+        return result;
+    }
+
     /**
      * 读取主页html
      */
@@ -55,10 +70,11 @@ class HtmlDataMange {
         return result;
     }
     /**
-     * @description 获取指定APIUrl
+     * @description 获取指定API url
      * 在页面上右键选择解析，获取当前API的url
+     * @return { string } 返回url字符串
      */
-    getSpcifyApiUrl() {
+    getSpcifyApiUrl(): string {
         // 获取当前活动的tab
         let activeTabDom = document.querySelector('.ant-tabs-tabpane-active');
         let result = '';
@@ -71,7 +87,7 @@ class HtmlDataMange {
         if (result) {
             return result;
         } else {
-            alert('获取API url失败');
+            throw new Error('获取当前api url失败');
         }
 
     }

@@ -1,69 +1,55 @@
-// import '@/css/index.less';
-// import db from '@/core/storage';
-import AxiosRequest from '@/core/AxiosRequest';
+
 import apiManage from './core/ApiManage';
 import Render from '@/core/render/index';
-import jsonManager from '@/core/JSONManager';
-import dispatchCenter from '@/core/DispatchCenter';
-import fileManager from './core/FileManager';
 import htmlDataManage from '@/core/HtmlDataManage';
-import { ApiDocsResponse } from 'types/api';
-/**
- * @description 获取swaggerResources
- */
-async function getSwaggerResource() {
-    let origin = window.location.origin;
-    let resourceUrl = `${origin}/gateway/swagger-resources`;
-    let api = new AxiosRequest(undefined, '');
-    let res = await api.get(resourceUrl);
-}
+import { MircoApp, Path } from '#/api';
+import jsonManager from './core/JSONManager';
+
 /**
  * @description 初始化
  */
-function init() {
-
-    // 事件注册
-    // regist();
+async function init() {
 
     // 页面上注入扩展程序的icon 
     let render = new Render('app');
     render.initIcon();
-    // 获取接口信息
-    // getSwaggerResource();
+    // 获取微应用基本信息
+    await apiManage.getSwaggerResource();
 }
-/**
- * @description 事件注册
- */
-// function regist() {
-//     dispatchCenter.regist('getApiDocs', undefined, apiManage.getApiDocs);
-//     dispatchCenter.regist('definitions2TSString', jsonManager, jsonManager.definitions2TSString);
-//     dispatchCenter.regist('exportFile', fileManager, fileManager.createFiles)
-// }
 
-// async function getApiDocs(group: string) {
-//     if (group) {
-//         let data = await apiManage.getApiDocs(group);
-//         let result = jsonManager.definitions2TSString(data.definitions);
-//         console.log('index getApiDocs', data, result)
-//         return result;
-//     } else {
-//         throw new Error('获取分组url/groupUrl失败')
-//     }
-
-// }
 
 
 init();
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
-    htmlDataManage.getHomeHtml();
-    let group = htmlDataManage.getGroupUrl();
-    let data = await apiManage.getApiDocs(group);
-    const bathPath = data.basePath;
-    console.log('data', data, bathPath);
+    const currentMicroApp = htmlDataManage.getCurrentMicroApp();
+
+    let swaggerResouce = await apiManage.swaggerResource;
+    let groupUrl = '';
+    let basePath = '';
+    swaggerResouce.forEach((item: MircoApp) => {
+        if (item.name === currentMicroApp) {
+            groupUrl = item.url;
+            
+        }
+    });
+    if (groupUrl) {
+        const apiDocs = await apiManage.getApiDocs(groupUrl);
+        basePath = apiDocs.basePath;
+        const paths = apiDocs.paths;
+        let apiUrl = htmlDataManage.getSpcifyApiUrl();
+        apiUrl = apiUrl.replace(basePath, '');
+        let pathInfo: Path = jsonManager.getSpcifyApiUrlInfo(apiUrl, paths);
+        console.log('apiUrl', apiUrl, basePath, pathInfo);
+        
+    }
+    
+    // const bathPath = data.basePath;
+    // console.log('data', data, bathPath);
     // 触发获取接口信息事件
     
+    
     // dispatchCenter.dispatchEvent('exportFile', {name: '测试.ts', data: data[0]});
-    console.log('chrome.runtime.onMessage', request, sender, sendResponse);
+    // console.log('chrome.runtime.onMessage', request, sender, sendResponse);
     sendResponse('content收到收到');
 })

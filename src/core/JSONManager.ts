@@ -1,9 +1,19 @@
 // JSON数据来自 http://10.50.23.68:40820/gateway/shuhan-enterprise-service/v2/api-docs?group=企业接口后台
 
+import { Paths } from "#/api";
+
 class JSONManager {
     
     constructor() {
 
+    }
+
+    
+    /**
+     * @description 从JSON中获取指定接口的基本信息
+     */
+    getSpcifyApiUrlInfo(url: string, paths: Paths) {
+        return paths[url];
     }
     /**
      * @description 批量 将definitions转化为ts字符串

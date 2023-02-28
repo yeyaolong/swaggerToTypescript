@@ -7,7 +7,8 @@ module.exports = {
   // entry: './src/index.ts',
   entry: {
     background: './src/background.ts',
-    index: './src/index.ts'
+    index: './src/index.ts',
+    popup: './src/popup/index.ts'
   },
   module: {
     rules: [
@@ -57,8 +58,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-        // filename: 'index.html',
-        // template: 'index.html',
+        filename: 'popup.html',
+        template: './src/popup/index.html',
+        chunks: ['popup']
     }),
     new CopyPlugin({
         patterns: [

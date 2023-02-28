@@ -1,3 +1,15 @@
+import type { AxiosResponse } from "axios";
+
+export type MircoApp = {
+    location: string;
+    name: string;
+    swaggerVersion: string;
+    url: string;
+}
+export interface SwaggerResourceResponse extends AxiosResponse<Array<MircoApp>>{
+
+}
+
 export type Contact = {
     name: string;
     description: string;
@@ -54,6 +66,15 @@ export type Get = {
     tags: Array<string>;
 }
 
+export type Path = {
+    post?: Post;
+    get?: Get;
+}
+
+export type Paths = {
+    [key: string]: Path;
+};
+
 export type Tag = {
     description: string;
     tag: string;
@@ -73,12 +94,7 @@ export type ApiDocs = {
         title: string;
         version: string;
     };
-    paths: {
-        [key: string]: {
-            post?: Post;
-            get?: Get;
-        }
-    };
+    paths: Paths;
     securityDefinitions: { // 安全相关
         [k: string]: { // 比如 '令牌'
             in: string; // 在'header'中（在请求头中）
@@ -90,6 +106,6 @@ export type ApiDocs = {
     tags: Array<Tag>;
 }
 
-export interface ApiDocsResponse extends ApiInterface<ApiDocs> {
+export interface ApiDocsResponse extends AxiosResponse<ApiDocs> {
 
 }

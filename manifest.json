@@ -12,6 +12,10 @@
         "storage",
         "contextMenus"
     ],
+    "action": {
+        "default_popup": "popup.html",
+        "defalut_icon": "./img/icon_128.png"
+    },
     "background": {
         "service_worker": "background.js",
         "type": "module"
