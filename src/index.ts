@@ -1,6 +1,7 @@
 // import '@/css/index.less';
 // import db from '@/core/storage';
 import AxiosRequest from '@/core/AxiosRequest';
+import apiManage from './core/ApiManage';
 import Render from '@/core/render/index';
 import jsonManager from '@/core/JSONManager';
 import dispatchCenter from '@/core/DispatchCenter';
@@ -20,8 +21,9 @@ async function getSwaggerResource() {
  * @description 初始化
  */
 function init() {
+
     // 事件注册
-    regist();
+    // regist();
 
     // 页面上注入扩展程序的icon 
     let render = new Render('app');
@@ -32,37 +34,35 @@ function init() {
 /**
  * @description 事件注册
  */
-function regist() {
-    dispatchCenter.regist('getApiDocs', undefined, getApiDocs);
-    dispatchCenter.regist('definitions2TSString', jsonManager, jsonManager.definitions2TSString);
-    dispatchCenter.regist('exportFile', fileManager, fileManager.createFiles)
-}
+// function regist() {
+//     dispatchCenter.regist('getApiDocs', undefined, apiManage.getApiDocs);
+//     dispatchCenter.regist('definitions2TSString', jsonManager, jsonManager.definitions2TSString);
+//     dispatchCenter.regist('exportFile', fileManager, fileManager.createFiles)
+// }
 
-async function getApiDocs() {
-    htmlDataManage.getHomeHtml();
-    let group = htmlDataManage.getGroupUrl();
-    let data;
-    if (group) {
-        const api = new AxiosRequest(undefined, '');
-        let url = window.location.origin + '/gateway' + group
-        let res: ApiDocsResponse = await api.get(url);
-        data = dispatchCenter.dispatchEvent('definitions2TSString', res.data.definitions);
-        return data;
-    } else {
-        throw new Error('获取分组url/groupUrl失败')
-    }
-    
-    
-    
-}
+// async function getApiDocs(group: string) {
+//     if (group) {
+//         let data = await apiManage.getApiDocs(group);
+//         let result = jsonManager.definitions2TSString(data.definitions);
+//         console.log('index getApiDocs', data, result)
+//         return result;
+//     } else {
+//         throw new Error('获取分组url/groupUrl失败')
+//     }
+
+// }
 
 
 init();
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
-    // htmlDataManage.getHomeHtml();
+    htmlDataManage.getHomeHtml();
+    let group = htmlDataManage.getGroupUrl();
+    let data = await apiManage.getApiDocs(group);
+    const bathPath = data.basePath;
+    console.log('data', data, bathPath);
     // 触发获取接口信息事件
-    // let data = await dispatchCenter.dispatchEvent('getApiDocs');
+    
     // dispatchCenter.dispatchEvent('exportFile', {name: '测试.ts', data: data[0]});
     console.log('chrome.runtime.onMessage', request, sender, sendResponse);
     sendResponse('content收到收到');

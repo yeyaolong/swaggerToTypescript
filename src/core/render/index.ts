@@ -1,6 +1,9 @@
 import './index.less';
 import htmlDataManage from '@/core/HtmlDataManage';
 import dispatchCenter from '@/core/DispatchCenter';
+import jsonManager from '@/core/JSONManager';
+import apiManage from '@/core/ApiManage';
+import fileManager from '@/core/FileManager';
 
 class Render {
     container: HTMLBodyElement | HTMLDivElement | HTMLElement | null;
@@ -19,8 +22,11 @@ class Render {
 
         iconContainer.addEventListener('click', async () => {
             // 触发获取接口信息事件
-            let data = await dispatchCenter.dispatchEvent('getApiDocs');
-            dispatchCenter.dispatchEvent('exportFile', {name: '测试.ts', data: data[0]});
+            htmlDataManage.getHomeHtml();
+            let group = htmlDataManage.getGroupUrl();
+            let data = await apiManage.getApiDocs(group);
+            let result = jsonManager.definitions2TSString(data.definitions);
+            fileManager.createFiles({name: '测试.ts', data: result})
         });
 
         if (this.container) {

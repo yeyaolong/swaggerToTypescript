@@ -1,5 +1,5 @@
 /**
- * 通过html元素获取数据
+ * @description 通过html元素获取数据
  */
 class HtmlDataMange {
     homeData: HomeData;
