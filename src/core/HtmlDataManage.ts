@@ -17,7 +17,9 @@ class HtmlDataMange {
             title: '',
             info: []
         };
-        let mainDom = document.querySelector('.ant-tabs-content')?.querySelector('.ant-tabs-tabpane-active')?.querySelector('main')?.querySelector('.description');
+        // let mainDom = document.querySelector('.ant-tabs-content')?.querySelector('.ant-tabs-tabpane-active')?.querySelector('main')?.querySelector('.description');
+        // 因为主页始终是第一个tab，并且无法关闭首页只会隐藏，所以下面这个方法可以直接读取到主页的获取信息
+        let mainDom = document.querySelector('.ant-tabs-content')?.querySelector('.ant-tabs-tabpane')?.querySelector('main')?.querySelector('.description');
         if (mainDom) {
             let title = mainDom.querySelector('h2')?.textContent;
             this.homeData.title = title ? title : '';
