@@ -3,9 +3,11 @@
 import { Paths } from "#/api";
 
 class JSONManager {
-    
+    processedCache: Array<string>; // 已处理的对象
+    unprocessedCache: Array<string>; // 待处理的对象
     constructor() {
-
+        this.processedCache = [];
+        this.unprocessedCache = [];
     }
 
     
@@ -24,16 +26,21 @@ class JSONManager {
         if (definitions && Object.keys(definitions).length) {
             for (let key in definitions) {
                 let tmp = definitions[key];
-                result += this.definition2TSString(tmp) + '\r\n';
+                result += this.definition2TSString(tmp);
             }
         }
         return result;
     }
     /**
      * @description 将definition转化为ts字符串
+     * 默认不做递归，只有一层，所以如果是对象类型的话，就不好用了
+     * 但是可以给 definitions2TSString 调用
+     * 因为 definitions 数组里面已经包含了所有对象,不需要做递归
      * @param definitions 
+     * @param {boolean} cacheFlag true 启用对象缓存 false 不启用
      */
-    definition2TSString(definition: Definition): string {
+    definition2TSString(definition: Definition, cacheFlag: boolean = false): string {
+        console.log('definition2TSString', definition,cacheFlag);
         let title = definition.title.replaceAll('integer', 'number')
                                     .replaceAll('int', 'number')
                                     .replaceAll('«', '<').replaceAll('»', '>');
@@ -51,22 +58,33 @@ class JSONManager {
             else if (tmp.type === 'array') {
                 // 数组
                 type = `Array<${tmp.items?.originalRef}>`;
+                console.log('definition2TSString 数组1', cacheFlag, tmp.items);
+                if (cacheFlag && tmp.items && tmp.items.originalRef && !this.processedCache.includes(tmp.items.originalRef)) {
+                    // 启用对象缓存，并且这个对象没有被处理过
+                    console.log('definition2TSString 数组2', cacheFlag, tmp.items);
+                    this.unprocessedCache.unshift(tmp.items.originalRef);
+                    
+                }
             }
             else if (tmp.originalRef) {
                 // 对象
                 type = tmp.originalRef.replaceAll('integer', 'number')
                                         .replaceAll('int', 'number')
                                         .replaceAll('«', '<').replaceAll('»', '>');
+                console.log('definition2TSString 对象', cacheFlag, this.processedCache.includes(tmp.originalRef));
+                if (cacheFlag && !this.processedCache.includes(tmp.originalRef)) {
+                    // 启用对象缓存，并且这个对象没有被处理过
+                    this.unprocessedCache.unshift(tmp.originalRef);
+                }
             }
 
             result += `\r\n\t${key}: ${type}; // ${tmp.description ? tmp.description : ''} ${tmp.format ? tmp.format : ''}`;
-
-
-            
         }
-        result += '\r\n}';
+        result += '\r\n}\r\n';
         return result;
     }
+
+
 }
 
 const jsonManager = new JSONManager();

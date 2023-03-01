@@ -36,39 +36,39 @@ export type Parameters = {
 
 }
 
-export type Response = {
+export type Responses = {
     [k: string]: {
         description: string;
         schema?: Schema;
     }
 }
 
-export type Post = {
+export type PostInfo = {
     consumes: Array<string>;
     deprecated: boolean;
     operationId: string;
     parameters: Array<Parameters>;
     produces: Array<string>;
-    response: Response;
+    responses: Responses;
     summary: string;
     tags: Array<string>;
     'x-order': string;
 }
 
-export type Get = {
+export type GetInfo = {
     deprecated: boolean;
     description: string;
     operationId: string;
     parameters: Array<Parameters>;
     produces: Array<string>;
-    response: Response;
+    responses: Responses;
     summary: string;
     tags: Array<string>;
 }
 
 export type Path = {
-    post?: Post;
-    get?: Get;
+    post?: PostInfo;
+    get?: GetInfo;
 }
 
 export type Paths = {

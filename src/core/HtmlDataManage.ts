@@ -76,7 +76,7 @@ class HtmlDataMange {
      */
     getSpcifyApiUrl(): string {
         // 获取当前活动的tab
-        let activeTabDom = document.querySelector('.ant-tabs-tabpane-active');
+        let activeTabDom = document.querySelector('.ant-tabs-card-content > .ant-tabs-tabpane-active');
         let result = '';
         if (activeTabDom) {
             let summaryPathDom = activeTabDom.querySelector('.knife4j-api-summary-path');
