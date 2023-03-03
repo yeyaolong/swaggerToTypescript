@@ -15,9 +15,10 @@ class ApiManage {
      * @description 获取swaggerResources,从这个接口可以获取所有微应用基本信息
      */
     async getSwaggerResource() {
+        let rootPath = this.getRootPath(false);
         if (!this.swaggerResource || !this.swaggerResource.length) {
             let origin = window.location.origin;
-            let resourceUrl = `${origin}/gateway/swagger-resources`;
+            let resourceUrl = `${origin}${rootPath}/swagger-resources`;
             let api = new AxiosRequest(undefined, '');
             let res: SwaggerResourceResponse = await api.get(resourceUrl);
             this.swaggerResource = res.data;
@@ -39,6 +40,28 @@ class ApiManage {
             return this.apiDocs;
         } else {
             throw new Error('获取分组url/groupUrl失败')
+        }
+    }
+    /**
+     * 
+     * @param {boolean} absolute true 返回绝对路径 false 放回相对路径
+     * @returns 
+     */
+    getRootPath(absolute: boolean): string {
+        const pathName = window.location.pathname.substring(1);
+        const webName = pathName == '' ? '' : pathName.substring(0, pathName.indexOf('/'));
+        let result = '';
+        if (webName == "") {
+            result = window.location.host;
+        }
+        else {
+            result = '/' + webName;
+            
+        }
+        if (absolute) {
+            return window.location.protocol + '//' + window.location.host + '/' + result;
+        } else {
+            return result;
         }
     }
 

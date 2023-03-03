@@ -60,7 +60,9 @@ class HtmlDataMange {
     }
 
     /**
-     * @description 获取分组URL
+     * @description 从homeData数据中获取分组URL
+     * 不过，因为homeData是通过分析主页html节点获得的，兼容性很差
+     * 建议直接使用getGroupUrl2，从接口获取分组url
      */
     getGroupUrl(): string {
         let result = '';
@@ -114,6 +116,7 @@ class HtmlDataMange {
      */
     async handleTransformPage() {
         const apiUrlParam = this.getSpcifyApiUrl();
+        console.log('handleTransformPage apiUrlParam', apiUrlParam)
         this.handleTransform(apiUrlParam);
     }
     /**
@@ -152,6 +155,7 @@ class HtmlDataMange {
                 if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
                     originalRef = methodInfo.responses['200'].schema.originalRef;
                 } else {
+                    // 异常原因有可能是 这是一个 导出文件的方法，所以不会有数据结构
                     throw new Error('Get 方法解析 originalRef 异常')
                 }
             }
@@ -161,6 +165,7 @@ class HtmlDataMange {
                 if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
                     originalRef = methodInfo.responses['200'].schema.originalRef;
                 } else {
+                    // 异常原因有可能是 这是一个 导出文件的方法，所以不会有数据结构
                     throw new Error('Post 方法解析 originalRef 异常')
                 }
             }
@@ -170,6 +175,7 @@ class HtmlDataMange {
                 if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
                     originalRef = methodInfo.responses['200'].schema.originalRef;
                 } else {
+                    
                     throw new Error('Delete 方法解析 originalRef 异常')
                 }
             }

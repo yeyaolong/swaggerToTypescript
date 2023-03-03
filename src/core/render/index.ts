@@ -22,8 +22,9 @@ class Render {
 
         iconContainer.addEventListener('click', async () => {
             // 触发获取接口信息事件
-            htmlDataManage.getHomeHtml();
-            let group = htmlDataManage.getGroupUrl();
+            // htmlDataManage.getHomeHtml();
+            // let group = htmlDataManage.getGroupUrl();
+            let group = await htmlDataManage.getGroupUrl2();
             let data = await apiManage.getApiDocs(group);
             let result = jsonManager.definitions2TSString(data.definitions);
             fileManager.createFiles({name: '测试.ts', data: result})
