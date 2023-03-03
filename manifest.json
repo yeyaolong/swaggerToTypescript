@@ -4,9 +4,9 @@
     "version": "0.0.1",
     "description": "根据swagger中的接口生成typescript的基本内容",
     "icons": {
-        "16": "./img/icon_16.png",
-        "48": "./img/icon_48.png",
-        "128": "./img/icon_128.png"
+        "16": "./img/swaggerToTs.png",
+        "48": "./img/swaggerToTs.png",
+        "128": "./img/swaggerToTs.png"
     },
     "permissions": [
         "storage",
@@ -14,7 +14,7 @@
     ],
     "action": {
         "default_popup": "popup.html",
-        "defalut_icon": "./img/icon_128.png"
+        "defalut_icon": "./img/swaggerToTs.png"
     },
     "background": {
         "service_worker": "background.js",
@@ -23,7 +23,8 @@
     "content_scripts": [
         {
             "matches": [
-                "*://*/gateway/*"
+                "*://*/gateway/*",
+                "*://*/swagger-ui.html*"
             ],
             "js": ["./index.js"]
         }
