@@ -22,6 +22,23 @@ async function init() {
 init();
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    console.log('chrome.runtime.onMessage', request, sender, sendResponse);
+    if (request.menuInfo && request.menuInfo.menuItemId === 'transformPage') {
+        // 转化当前页的接口
+        handleTransformPage();
+    }
+    if (request.menuInfo && request.menuInfo.menuItemId === 'transformSelection') {
+        // 转化当前选中的接口
+        handleTransformSelection();
+    }
+
+    sendResponse('content收到收到');
+});
+
+/**
+ * @description 转化当前页的接口
+ */
+async function handleTransformPage() {
     const currentMicroApp = htmlDataManage.getCurrentMicroApp();
 
     let swaggerResouce = await apiManage.swaggerResource;
@@ -85,5 +102,11 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 
         fileManager.createFiles({name: '测试.ts', data: result})
     }
-    sendResponse('content收到收到');
-})
+}
+
+/**
+ * @description 转化当前选中的接口
+ */
+function handleTransformSelection() {
+
+}
