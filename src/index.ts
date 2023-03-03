@@ -2,7 +2,7 @@
 import apiManage from './core/ApiManage';
 import Render from '@/core/render/index';
 import htmlDataManage from '@/core/HtmlDataManage';
-import { MircoApp, Path, PostInfo, GetInfo } from '#/api';
+import { MircoApp, Path, PostInfo, GetInfo, DeleteInfo } from '#/api';
 import jsonManager from './core/JSONManager';
 import fileManager from './core/FileManager';
 /**
@@ -78,6 +78,16 @@ async function handleTransformPage() {
                 throw new Error('Post 方法解析originalRef 异常')
             }
         }
+
+        if (pathInfo && pathInfo.delete) {
+            const methodInfo: DeleteInfo = pathInfo.delete;
+            if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
+                originalRef = methodInfo.responses['200'].schema.originalRef;
+            } else {
+                throw new Error('Delete 方法解析originalRef 异常')
+            }
+        }
+        
         
 
         let definition = definitions[originalRef];
