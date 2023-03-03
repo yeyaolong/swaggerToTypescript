@@ -1,4 +1,8 @@
-// import apiManage from './core/ApiManage';
+import apiManage from './ApiManage';
+import jsonManager from './JSONManager';
+import fileManager from './FileManager';
+import type { MircoApp, Path, PostInfo, GetInfo, DeleteInfo } from '#/api';
+
 /**
  * @description 通过html元素获取数据
  */
@@ -25,7 +29,7 @@ class HtmlDataMange {
     }
 
     /**
-     * 读取主页html
+     * @description 读取主页html
      */
     getHomeHtml() {
         this.homeData = {
@@ -56,7 +60,7 @@ class HtmlDataMange {
     }
 
     /**
-     * 获取分组URL
+     * @description 获取分组URL
      */
     getGroupUrl(): string {
         let result = '';
@@ -67,6 +71,20 @@ class HtmlDataMange {
                 }
             })
         }
+        return result;
+    }
+    /**
+     * @description 获取分组url
+     */
+    async getGroupUrl2(): Promise<string> {
+        let result = '';
+        const currentMicroApp = htmlDataManage.getCurrentMicroApp();
+        let swaggerResouce = await apiManage.swaggerResource;
+        swaggerResouce.forEach((item: MircoApp) => {
+            if (item.name === currentMicroApp) {
+                result = item.url;
+            }
+        });
         return result;
     }
     /**
@@ -87,9 +105,103 @@ class HtmlDataMange {
         if (result) {
             return result;
         } else {
-            throw new Error('获取当前api url失败');
+            throw new Error('获取当前页面api url失败');
         }
 
+    }
+    /**
+     * @description 转化当前页的接口
+     */
+    async handleTransformPage() {
+        const apiUrlParam = this.getSpcifyApiUrl();
+        this.handleTransform(apiUrlParam);
+    }
+    /**
+     * @description 转化当前选中的接口
+     */
+    async handleTransformSelection(menuInfo: ChromeCustom.request.menuInfo) {
+        
+        if (menuInfo.selectionText) {
+            const selectionText = menuInfo.selectionText;
+            this.handleTransform(selectionText);
+        } else {
+            throw new Error('转化当前选中的接口异常：获取用户选中内容失败')
+        }        
+    }
+    /**
+     * @description 转化接口
+     */
+    async handleTransform(apiUrlParam: string) {
+        
+        let groupUrl = await this.getGroupUrl2();
+        let basePath = '';
+        let originalRef = '';
+        if (groupUrl) {
+            const apiDocs = await apiManage.getApiDocs(groupUrl);
+            basePath = apiDocs.basePath;
+            const paths = apiDocs.paths;
+            const definitions = apiDocs.definitions;
+            
+            let apiUrl = apiUrlParam.replace(basePath, '');
+
+            let pathInfo: Path = jsonManager.getSpcifyApiUrlInfo(apiUrl, paths);
+            console.log('apiUrl', basePath, apiUrl, pathInfo);
+            
+            if (pathInfo && pathInfo.get) {
+                const methodInfo: GetInfo = pathInfo.get;
+                if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
+                    originalRef = methodInfo.responses['200'].schema.originalRef;
+                } else {
+                    throw new Error('Get 方法解析 originalRef 异常')
+                }
+            }
+    
+            if (pathInfo && pathInfo.post) {
+                const methodInfo: PostInfo = pathInfo.post;
+                if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
+                    originalRef = methodInfo.responses['200'].schema.originalRef;
+                } else {
+                    throw new Error('Post 方法解析 originalRef 异常')
+                }
+            }
+    
+            if (pathInfo && pathInfo.delete) {
+                const methodInfo: DeleteInfo = pathInfo.delete;
+                if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
+                    originalRef = methodInfo.responses['200'].schema.originalRef;
+                } else {
+                    throw new Error('Delete 方法解析 originalRef 异常')
+                }
+            }
+
+            console.log('originRef', originalRef);
+            
+            if (!originalRef) {
+                throw new Error(`获取originalRef异常，originalRef=${originalRef}`);
+            }
+    
+            let definition = definitions[originalRef];
+            let result = '';
+            result += jsonManager.definition2TSString(definition, true);
+            // 利用上一次转化生成的对象缓存，再做一次转化
+            if (jsonManager.unprocessedCache && jsonManager.unprocessedCache.length) {
+                // const len = jsonManager.processedCache.length;
+                // for (let i = 0; i < jsonManager.unprocessedCache.length; i++) {
+                    // 这里不写i++，因为jsonManager.unprocessedCache会慢慢减小
+                for (let i = 0; i < jsonManager.unprocessedCache.length;) {
+                    let ref: string = jsonManager.unprocessedCache.pop() as string;
+                    console.log('ref', ref);
+                    result+= jsonManager.definition2TSString(definitions[ref], true)
+                    jsonManager.processedCache.push(ref);
+                    console.log('jsonManager.unprocessedCache', jsonManager.unprocessedCache.length, jsonManager.unprocessedCache)
+                }
+            }
+            // 转化完成，缓存重置
+            jsonManager.processedCache = [];
+            jsonManager.unprocessedCache = [];
+    
+            fileManager.createFiles({name: '测试.ts', data: result})
+        }
     }
 }
 
