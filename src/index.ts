@@ -10,6 +10,8 @@ async function init() {
     // 页面上注入扩展程序的icon 
     let render = new Render('app');
     render.initIcon();
+    // 获取swagger-ui html 渲染相关的参数
+    await apiManage.getSwaggerUIConfig();
     // 获取微应用基本信息
     await apiManage.getSwaggerResource();
 }

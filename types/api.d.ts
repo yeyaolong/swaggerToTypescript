@@ -1,5 +1,28 @@
 import type { AxiosResponse } from "axios";
 
+export type SwaggerUIConfig = {
+    apisSorter: string;
+    deepLinking?: boolean;
+    defaultModelExpandDepth?: number;
+    defaultModelRendering: string;
+    defaultModelsExpandDepth?: number;
+    displayOperationId?: boolean;
+    displayRequestDuration?: boolean;
+    docExpansion: string;
+    filter?: boolean;
+    jsonEditor: boolean;
+    operationsSorter?: string;
+    showExtensions?: boolean;
+    showRequestHeaders: boolean;
+    supportedSubmitMethods: Array<string>; // ["get", "post", "put", "delete", "patch", "trace"]
+    tagsSorter?: string;
+    validatorUrl?: string;
+}
+
+export interface SwaggerUIConfigResponse extends AxiosResponse<SwaggerUIConfig> {
+
+}
+
 export type MircoApp = {
     location: string;
     name: string;

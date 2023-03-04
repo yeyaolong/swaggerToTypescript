@@ -16,20 +16,65 @@ class HtmlDataMange {
     }
     /**
      * @descriptioin 从页面上获取当前选中的微应用
+     * 从页面读取dom对兼容性是非常不友好的，不建议使用
      */
-    getCurrentMicroApp(): string {
+    async getCurrentMicroApp(): Promise<string> {
+        let result = undefined;
+        if (!apiManage.swaggerUIConfig || !apiManage.swaggerUIConfig.defaultModelExpandDepth) {
+            await apiManage.getSwaggerUIConfig();
+        }
+        if (apiManage.swaggerUIConfig && apiManage.swaggerUIConfig.defaultModelRendering === 'example') {
+            result = this.getExampleCurrentMicroApp();
+        }
+
+        if (apiManage.swaggerUIConfig && apiManage.swaggerUIConfig.defaultModelRendering === 'schema') {
+            result = this.getSchemaCurrentMicroApp();
+        }
+        if (typeof result !== 'string') {
+            throw new Error('getCurrentMicroApp 页面上获取当前选中的微应用异常')
+        }
+
+        return result;
+    }
+    /**
+     * @description swagger-ui html的渲染类型为"example"时
+     * 也即 /swagger-resources/configuration/ui 返回的 defaultModelRendering = "example"
+     * @returns {string} 当前微应用名称
+     */
+    getExampleCurrentMicroApp(): string {
         let result = '';
         const currentSelectedDom = document.querySelector('.ant-select-selection-selected-value')
         if (currentSelectedDom) {
             result = currentSelectedDom.textContent ? currentSelectedDom.textContent : '';
         } else {
-            throw new Error('页面上获取当前选中的微应用异常')
+            throw new Error('getExampleCurrentMicroApp 页面上获取当前选中的微应用异常')
         }
         return result;
     }
 
     /**
+     * @description swagger-ui html的渲染类型为"schema"时
+     * 也即 /swagger-resources/configuration/ui 返回的 defaultModelRendering = "schema"
+     * @returns {string} 当前微应用名称
+     */
+    getSchemaCurrentMicroApp(): string {
+        let result = '';
+        const currentSelectedDom = document.querySelector('#select_baseUrl') as HTMLSelectElement
+        if (currentSelectedDom) {
+            result = currentSelectedDom.textContent ? currentSelectedDom.textContent : '';
+
+            result = result.split('(')[0].trim();
+        } else {
+            throw new Error('getSchemaCurrentMicroApp 页面上获取当前选中的微应用异常')
+        }
+        return result;
+    }
+
+    
+
+    /**
      * @description 读取主页html
+     * @deprecated 从页面读取dom对兼容性是非常不友好的，不要使用
      */
     getHomeHtml() {
         this.homeData = {
@@ -63,6 +108,7 @@ class HtmlDataMange {
      * @description 从homeData数据中获取分组URL
      * 不过，因为homeData是通过分析主页html节点获得的，兼容性很差
      * 建议直接使用getGroupUrl2，从接口获取分组url
+     * @deprecated 从页面读取dom对兼容性是非常不友好的，不要使用
      */
     getGroupUrl(): string {
         let result = '';
@@ -80,11 +126,12 @@ class HtmlDataMange {
      */
     async getGroupUrl2(): Promise<string> {
         let result = '';
-        const currentMicroApp = htmlDataManage.getCurrentMicroApp();
+        const currentMicroApp = await htmlDataManage.getCurrentMicroApp();
+        console.log('getGroupUrl2 currentMicroApp', currentMicroApp)
         let swaggerResouce = await apiManage.swaggerResource;
         swaggerResouce.forEach((item: MircoApp) => {
             if (item.name === currentMicroApp) {
-                result = item.url;
+                result = item.location;
             }
         });
         return result;
@@ -135,17 +182,21 @@ class HtmlDataMange {
      * @description 转化接口
      */
     async handleTransform(apiUrlParam: string) {
-        
+        console.log('handleTransform apiUrlParam', apiUrlParam);
         let groupUrl = await this.getGroupUrl2();
+        console.log('handleTransform groupUrl', groupUrl);
         let basePath = '';
         let originalRef = '';
-        if (groupUrl) {
+        // 支持等于空字符串的groupUrl
+        if (typeof groupUrl === 'string') {
             const apiDocs = await apiManage.getApiDocs(groupUrl);
             basePath = apiDocs.basePath;
             const paths = apiDocs.paths;
             const definitions = apiDocs.definitions;
-            
-            let apiUrl = apiUrlParam.replace(basePath, '');
+            let apiUrl =  apiUrlParam.replace(basePath, '');
+            if (apiManage.swaggerUIConfig && apiManage.swaggerUIConfig.defaultModelRendering === 'schema') {
+                apiUrl = apiUrlParam;
+            }
 
             let pathInfo: Path = jsonManager.getSpcifyApiUrlInfo(apiUrl, paths);
             console.log('apiUrl', basePath, apiUrl, pathInfo);
@@ -154,6 +205,13 @@ class HtmlDataMange {
                 const methodInfo: GetInfo = pathInfo.get;
                 if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
                     originalRef = methodInfo.responses['200'].schema.originalRef;
+                    
+                    if (!originalRef) {
+                        let ref = methodInfo.responses['200'].schema.$ref;
+                        let refArr = ref.split('/');
+                        const len = refArr.length;
+                        originalRef = refArr[len-1];
+                    }
                 } else {
                     // 异常原因有可能是 这是一个 导出文件的方法，所以不会有数据结构
                     throw new Error('Get 方法解析 originalRef 异常')
@@ -164,6 +222,12 @@ class HtmlDataMange {
                 const methodInfo: PostInfo = pathInfo.post;
                 if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
                     originalRef = methodInfo.responses['200'].schema.originalRef;
+                    if (!originalRef) {
+                        let ref = methodInfo.responses['200'].schema.$ref;
+                        let refArr = ref.split('/');
+                        const len = refArr.length;
+                        originalRef = refArr[len-1];
+                    }
                 } else {
                     // 异常原因有可能是 这是一个 导出文件的方法，所以不会有数据结构
                     throw new Error('Post 方法解析 originalRef 异常')
@@ -174,6 +238,12 @@ class HtmlDataMange {
                 const methodInfo: DeleteInfo = pathInfo.delete;
                 if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
                     originalRef = methodInfo.responses['200'].schema.originalRef;
+                    if (!originalRef) {
+                        let ref = methodInfo.responses['200'].schema.$ref;
+                        let refArr = ref.split('/');
+                        const len = refArr.length;
+                        originalRef = refArr[len-1];
+                    }
                 } else {
                     
                     throw new Error('Delete 方法解析 originalRef 异常')
@@ -188,7 +258,7 @@ class HtmlDataMange {
     
             let definition = definitions[originalRef];
             let result = '';
-            result += jsonManager.definition2TSString(definition, true);
+            result += jsonManager.definition2TSString(originalRef, definition, true);
             // 利用上一次转化生成的对象缓存，再做一次转化
             if (jsonManager.unprocessedCache && jsonManager.unprocessedCache.length) {
                 // const len = jsonManager.processedCache.length;
@@ -197,7 +267,7 @@ class HtmlDataMange {
                 for (let i = 0; i < jsonManager.unprocessedCache.length;) {
                     let ref: string = jsonManager.unprocessedCache.pop() as string;
                     console.log('ref', ref);
-                    result+= jsonManager.definition2TSString(definitions[ref], true)
+                    result+= jsonManager.definition2TSString(ref, definitions[ref], true)
                     jsonManager.processedCache.push(ref);
                     console.log('jsonManager.unprocessedCache', jsonManager.unprocessedCache.length, jsonManager.unprocessedCache)
                 }
