@@ -10,7 +10,8 @@
     },
     "permissions": [
         "storage",
-        "contextMenus"
+        "contextMenus",
+        "tabs"
     ],
     "action": {
         "default_popup": "popup.html",
@@ -24,7 +25,8 @@
         {
             "matches": [
                 "*://*/gateway/*",
-                "*://*/swagger-ui.html*"
+                "*://*/swagger-ui.html*",
+                "*://*/api/*"
             ],
             "js": ["./index.js"]
         }
