@@ -13,7 +13,7 @@
 - 使用订阅发布模式
 
 
-# 2023026
+# 20230226
 
 - definitions解析方法
 
@@ -56,7 +56,7 @@
 
 - 对象重复解析
 
-  如果某个对象中嵌套了多个对象，比如下面的 RemoteData，会导致最后生成多个RemoteData对象
+如果某个对象中嵌套了多个对象，比如下面的 RemoteData，会导致最后生成多个RemoteData对象
 
 ![image-20230413152843639](./changelog.assets/image-20230413152843639.png)
 
