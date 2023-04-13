@@ -27,10 +27,11 @@ class AxiosRequest {
     // 初始化请求拦截器
     initRequestInterceptors() {
         this.axios.interceptors.request.use(
-            (config: AxiosRequestConfig) => {
+            async (config: AxiosRequestConfig) => {
               const { headers = {} } = config
               const isToken = headers['X-isToken'] === false ? headers['X-isToken'] : true
-              const token = db.get('TOKEN', '')
+              const token = await db.get('TOKEN', '')
+              console.log('initRequestInterceptors', token)
               if (token && isToken) {
                 headers.Authorization = 'Bearer ' + token
               }

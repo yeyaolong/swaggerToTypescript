@@ -89,6 +89,18 @@ export type GetInfo = {
     tags: Array<string>;
 }
 
+export type PutInfo = {
+    consumes: Array<string>;
+    deprecated: boolean;
+    operationId: string;
+    parameters: Array<Parameters>;
+    produces: Array<string>;
+    responses: Responses;
+    summary: string;
+    tags: Array<string>;
+    'x-order': string;
+}
+
 export type DeleteInfo = {
     tags: Array<string>;
     summary: string;
@@ -104,6 +116,7 @@ export type Path = {
     post?: PostInfo;
     get?: GetInfo;
     delete?: DeleteInfo;
+    put?: PutInfo;
 }
 
 export type Paths = {

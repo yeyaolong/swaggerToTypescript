@@ -15,8 +15,9 @@ class HtmlDataMange {
         };
     }
     /**
-     * @descriptioin 从页面上获取当前选中的微应用
+     * @descriptioin 根据swagger渲染类型，从页面上获取当前选中的微应用
      * 从页面读取dom对兼容性是非常不友好的，不建议使用
+     * 不过目前我没找到更好的方式来获取微应用名称
      */
     async getCurrentMicroApp(): Promise<string> {
         let result = undefined;
@@ -69,7 +70,32 @@ class HtmlDataMange {
         }
         return result;
     }
+    /**
+     * @description 获取当前要解析的接口的 operationId，相同接口名，但是method不同时,
+     * 需要用operationId来区分不同 method 的接口
+     * 
+     * 目前只有页面渲染类型 defaultModelRendering === 'example' 容易解析
+     */
+    async getCurrentInterfaceOperationId() {
+        let result = undefined;
+        if (!apiManage.swaggerUIConfig || !apiManage.swaggerUIConfig.defaultModelExpandDepth) {
+            await apiManage.getSwaggerUIConfig();
+        }
+        if (apiManage.swaggerUIConfig && apiManage.swaggerUIConfig.defaultModelRendering === 'example') {
+            let tmpArr = window.location.href.split('/');
+            const len = tmpArr.length;
+            result = tmpArr[len-1];
+        }
 
+        // if (apiManage.swaggerUIConfig && apiManage.swaggerUIConfig.defaultModelRendering === 'schema') {
+        //     result = this.getSchemaCurrentMicroApp();
+        // }
+        if (typeof result !== 'string') {
+            throw new Error('getCurrentInterfaceOperationId 获取当前选中接口的operationId异常')
+        }
+
+        return result;
+    }
     
 
     /**
@@ -180,6 +206,7 @@ class HtmlDataMange {
     }
     /**
      * @description 转化接口
+     * 
      */
     async handleTransform(apiUrlParam: string) {
         console.log('handleTransform apiUrlParam', apiUrlParam);
@@ -188,6 +215,7 @@ class HtmlDataMange {
         let basePath = '';
         let originalRef = '';
         // 支持等于空字符串的groupUrl
+
         if (typeof groupUrl === 'string') {
             const apiDocs = await apiManage.getApiDocs(groupUrl);
             basePath = apiDocs.basePath;
@@ -200,8 +228,9 @@ class HtmlDataMange {
 
             let pathInfo: Path = jsonManager.getSpcifyApiUrlInfo(apiUrl, paths);
             console.log('apiUrl', basePath, apiUrl, pathInfo);
-            
-            if (pathInfo && pathInfo.get) {
+            const operationId = await this.getCurrentInterfaceOperationId();
+            console.log('operationId', operationId)
+            if (pathInfo && pathInfo.get && pathInfo.get.operationId === operationId) {
                 const methodInfo: GetInfo = pathInfo.get;
                 if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
                     originalRef = methodInfo.responses['200'].schema.originalRef;
@@ -218,7 +247,7 @@ class HtmlDataMange {
                 }
             }
     
-            if (pathInfo && pathInfo.post) {
+            if (pathInfo && pathInfo.post && pathInfo.post.operationId === operationId) {
                 const methodInfo: PostInfo = pathInfo.post;
                 if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
                     originalRef = methodInfo.responses['200'].schema.originalRef;
@@ -233,8 +262,24 @@ class HtmlDataMange {
                     throw new Error('Post 方法解析 originalRef 异常')
                 }
             }
+
+            if (pathInfo && pathInfo.put && pathInfo.put.operationId === operationId) {
+                const methodInfo: PostInfo = pathInfo.put;
+                if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
+                    originalRef = methodInfo.responses['200'].schema.originalRef;
+                    if (!originalRef) {
+                        let ref = methodInfo.responses['200'].schema.$ref;
+                        let refArr = ref.split('/');
+                        const len = refArr.length;
+                        originalRef = refArr[len-1];
+                    }
+                } else {
+                    // 异常原因有可能是 这是一个 导出文件的方法，所以不会有数据结构
+                    throw new Error('Put 方法解析 originalRef 异常')
+                }
+            }
     
-            if (pathInfo && pathInfo.delete) {
+            if (pathInfo && pathInfo.delete && pathInfo.delete.operationId === operationId) {
                 const methodInfo: DeleteInfo = pathInfo.delete;
                 if (methodInfo.responses['200'] && methodInfo.responses['200'].schema) {
                     originalRef = methodInfo.responses['200'].schema.originalRef;
