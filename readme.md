@@ -7,7 +7,7 @@
 
 ## swagger 版本是 2.0
 
-## swagger 渲染类型 
+## swagger 渲染类型
 
 ### swaggerUIConfig.defaultModelRendering = 'example'
 
