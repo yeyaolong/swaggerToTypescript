@@ -45,6 +45,19 @@
 
 # 20230413
 ## 新增
+
 - 添加put方法的支持
+
 ## bug修复
+
 - 同一名称，不同 methods 类型接口 解析结果异常，总是解析成 delete method 的那个返回值
+
+## 目前存在的问题
+
+- 对象重复解析
+
+  如果某个对象中嵌套了多个对象，比如下面的 RemoteData，会导致最后生成多个RemoteData对象
+
+![image-20230413152843639](F:\workspace\chrome扩展\swaggerToTypescript\changelog.assets\image-20230413152843639.png)
+
+![image-20230413152911110](F:\workspace\chrome扩展\swaggerToTypescript\changelog.assets\image-20230413152911110.png)
