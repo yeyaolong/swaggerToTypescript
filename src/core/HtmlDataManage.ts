@@ -20,20 +20,25 @@ class HtmlDataMange {
      * 不过目前我没找到更好的方式来获取微应用名称
      */
     async getCurrentMicroApp(): Promise<string> {
-        let result = undefined;
+        let result = 'default';
         if (!apiManage.swaggerUIConfig || !apiManage.swaggerUIConfig.defaultModelExpandDepth) {
             await apiManage.getSwaggerUIConfig();
         }
-        if (apiManage.swaggerUIConfig && apiManage.swaggerUIConfig.defaultModelRendering === 'example') {
-            result = this.getExampleCurrentMicroApp();
+        try {
+            if (apiManage.swaggerUIConfig && apiManage.swaggerUIConfig.defaultModelRendering === 'example') {
+                result = this.getExampleCurrentMicroApp();
+            }
+    
+            if (apiManage.swaggerUIConfig && apiManage.swaggerUIConfig.defaultModelRendering === 'schema') {
+                result = this.getSchemaCurrentMicroApp();
+            }
+            if (typeof result !== 'string') {
+                throw new Error('getCurrentMicroApp 页面上获取当前选中的微应用异常')
+            }
+        } catch(error) {
+            result = 'default';
         }
-
-        if (apiManage.swaggerUIConfig && apiManage.swaggerUIConfig.defaultModelRendering === 'schema') {
-            result = this.getSchemaCurrentMicroApp();
-        }
-        if (typeof result !== 'string') {
-            throw new Error('getCurrentMicroApp 页面上获取当前选中的微应用异常')
-        }
+        
 
         return result;
     }
@@ -43,7 +48,7 @@ class HtmlDataMange {
      * @returns {string} 当前微应用名称
      */
     getExampleCurrentMicroApp(): string {
-        let result = '';
+        let result = 'default';
         const currentSelectedDom = document.querySelector('.ant-select-selection-selected-value')
         if (currentSelectedDom) {
             result = currentSelectedDom.textContent ? currentSelectedDom.textContent : '';
@@ -59,7 +64,7 @@ class HtmlDataMange {
      * @returns {string} 当前微应用名称
      */
     getSchemaCurrentMicroApp(): string {
-        let result = '';
+        let result = 'default';
         const currentSelectedDom = document.querySelector('#select_baseUrl') as HTMLSelectElement
         if (currentSelectedDom) {
             result = currentSelectedDom.textContent ? currentSelectedDom.textContent : '';
@@ -153,8 +158,8 @@ class HtmlDataMange {
     async getGroupUrl2(): Promise<string> {
         let result = '';
         const currentMicroApp = await htmlDataManage.getCurrentMicroApp();
-        console.log('getGroupUrl2 currentMicroApp', currentMicroApp)
         let swaggerResouce = await apiManage.swaggerResource;
+        console.log('getGroupUrl2 currentMicroApp', currentMicroApp, swaggerResouce);
         swaggerResouce.forEach((item: MircoApp) => {
             if (item.name === currentMicroApp) {
                 result = item.location;

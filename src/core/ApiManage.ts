@@ -81,7 +81,7 @@ class ApiManage {
     }
     /**
      * 
-     * @param {boolean} absolute true 返回绝对路径 false 放回相对路径
+     * @param {boolean} absolute true 返回绝对路径 false 返回相对路径
      * @returns 
      */
     getRootPath(absolute: boolean): string {
