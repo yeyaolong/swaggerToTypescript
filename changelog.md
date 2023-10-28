@@ -61,3 +61,9 @@
 ![image-20230413152843639](./changelog.assets/image-20230413152843639.png)
 
 ![image-20230413152911110](./changelog.assets/image-20230413152911110.png)
+
+# 20231028
+
+- [x] fix: 适配 bootstrap-ui 仅只有 default 这个 分组 的情况
+
+  ![image-20231028160222652](.\changelog.assets\image-20231028160222652.png)
