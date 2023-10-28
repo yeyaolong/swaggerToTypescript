@@ -26,9 +26,12 @@
             "matches": [
                 "*://*/gateway/*",
                 "*://*/swagger-ui.html*",
-                "*://*/api/*"
+                "*://*/api/*",
+                "*://*/doc.html*"
             ],
-            "js": ["./index.js"]
+            "js": [
+                "./index.js"
+            ]
         }
     ]
 }
