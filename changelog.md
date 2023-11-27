@@ -67,3 +67,13 @@
 - [x] fix: 适配 bootstrap-ui 仅只有 default 这个 分组 的情况
 
   ![image-20231028160222652](.\changelog.assets\image-20231028160222652.png)
+
+# 20231127
+
+- [x] 添加新的 matchs 
+
+  ![image-20231127192743477](F:\代码\日常收集和练习\chrome扩展\swaggerToTypescript\changelog.assets\image-20231127192743477.png)
+
+解决这种类型的URL识别不出来的问题
+
+http://IP:PORT/themeapi/doc.html#/home
